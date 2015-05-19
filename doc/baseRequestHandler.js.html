@@ -1,0 +1,318 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>CrowdDoc Source: baseRequestHandler.js</title>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css" />
+    
+    <link type="text/css" rel="stylesheet" href="styles/main.css" />
+</head>
+<body>
+    <header>
+        
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#top-menu-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">CrowdDoc</a>
+        </div>
+        <div class="collapse navbar-collapse" id="top-menu-collapse">
+            
+                
+<ul class="nav navbar-nav">
+    <li class="">
+        <a href="index.html">Home</a>
+    </li>
+    
+    <li class="dropdown">
+        <a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+          Classes 
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+            
+            
+                <li><a href="Animal.html">Animal</a></li>
+            
+                <li><a href="BaseApiRequestHandler.html">BaseApiRequestHandler</a></li>
+            
+                <li><a href="BaseRequestHandler.html">BaseRequestHandler</a></li>
+            
+            
+        </ul>
+    </li>
+    
+</ul>
+            
+            <form class="navbar-form navbar-right" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control typeahead" placeholder="Search for..." />
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</nav>
+    </header>
+    <section class="container-fluid">
+        <div class="row">
+            <div class="sidebar col-sm-5 col-md-4 col-lg-3">
+                
+
+    
+<aside id="toc" class="well"></aside>
+
+
+
+            </div>
+            <div class="col-sm-7 col-md-8 col-lg-9 col-sm-offset-5 col-md-offset-4 col-lg-offset-3">
+                <div id="main">
+                    
+
+
+    <div class="page-header"><h1>Source: baseRequestHandler.js</h1></div>
+    
+    <section>
+        <article>
+            <pre class="prettyprint linenums">var __class = require('node-class').class,
+    chalk = require('chalk');
+
+/**
+ * @class
+ */
+var BaseRequestHandler = module.exports = __class('BaseRequestHandler',
+// TODO TOREAD: r.habermann
+// this @lends needs to placed directly one line before the object literal,
+// like you can see one line below. Otherwise, jsdoc can not inherhit the properties
+// of the class as members of the class.
+/** @lends BaseRequestHandler */
+{
+
+    /**
+     * the request as delivered from express framework
+     * @type {http.clientRequest}
+     * @see {@link https://nodejs.org/api/http.html#http_class_http_clientrequest}
+     */
+    request: null,
+
+    /**
+     * the response as delivered from express framework
+     * @type {http.serverResponse}
+     */
+    response: null,
+
+    /**
+     * functions of type function(req, res, next, handler) that will be called as middle wares
+     * @type {Array}
+     */
+    middleWares: [],
+
+    /**
+     * If true no further handling will be done because the response is already sent
+     * @type {Bool}
+     */
+    responseIsSent: false,
+    //------------------------------------------------------------------------------------------------------
+
+
+    //------------------------------------------------------------------------------------------------------
+    /**
+     * @constructs
+     * @param req Object Node's request object.
+     * @param res Object Node's response object.
+     */
+    initialize: function( req, res) {
+        this.request = req;
+        this.response = res;
+    },
+
+
+    /**
+     * @memberof
+     * Log from this prototype.
+     */
+    log: function log() {
+
+        console.log.call(console, timeStamp(), chalk.blue(this.$class), chalk.green(Array.prototype.slice.call(arguments)));
+
+    },
+
+
+    logError: function logError() {
+
+        console.error.call(console, timeStamp(), chalk.red(this.$class), chalk.yellow(Array.prototype.slice.call(arguments)));
+
+    },
+
+
+    logWarn: function logWarn() {
+
+        console.warn.call(console, timeStamp(), chalk.yellow(this.$class), chalk.white(Array.prototype.slice.call(arguments)));
+
+    },
+
+
+    /**
+     * Add middle ware
+     *
+     * @param middleWare - function to be called before handler function.
+     *                     ( function( req, res, next, handler))
+     */
+    //------------------------------------------------------------------------------------------------------
+    useMiddleWare: function( middleWare)
+    //------------------------------------------------------------------------------------------------------
+    {
+        if ( typeof middleWare !== 'function' ) { return; }
+        this.middleWares.push( middleWare);
+    },
+
+
+    /**
+     * To be called from outside (user of class) when setup is finished
+     *
+     * @param callback - callback that should be called when handling is done
+     *                  ( function( req, res, handler) )
+     */
+    //------------------------------------------------------------------------------------------------------
+    performHandleRequest: function( callback)
+    //------------------------------------------------------------------------------------------------------
+    {
+        var that = this, /*startProcess = -1, endProcess = 0, currentMiddleWareName = null,*/
+
+            middleWares = [].concat(this.middleWares), name,
+
+            next = function() {
+
+                /*if ( startProcess > 0 &amp;&amp; typeof currentMiddleWareName === 'string') {
+                    endProcess = (new Date()).getTime();
+                    console.log('Process duration ('+currentMiddleWareName+'):' + (endProcess - startProcess));
+                    startProcess = -1;
+                }*/
+
+                if ( that.responseIsSent ) {
+                    console.log("Response has already been sent in "+that.$class);
+                    return;
+                }
+                var middleWare;
+
+                if ( middleWares.length &lt; 1 ) {
+                    if ( typeof callback === 'function' ) {
+                        that.handleRequest(callback);
+                    }
+                    return;
+                }
+
+                middleWare = middleWares.splice(0,1)[0];
+
+                if ( typeof middleWare !== 'function' ) {
+                    next();
+                    return;
+                }
+
+                /*currentMiddleWareName = middleWare.toString();
+
+                startProcess = (new Date()).getTime();*/
+
+                /*
+                Log middleware name -----------------------------------
+                 */
+
+                name = 'unknwon';
+
+                for(name in that.__proto__) {
+                    if ( that.__proto__.hasOwnProperty(name) ) {
+                        if ( that.__proto__[name] === middleWare ) {
+                            break;
+                        }
+                    }
+                }
+
+                console.log('middleware: '+name);
+
+                /*
+                 End log middleware name ------------------------------
+                 */
+
+                middleWare( that.request, that.response, next, that);
+            }
+        ;
+        next();
+    },
+
+
+    /**
+     * To be overridden by inheriting classes
+     *
+     * @param callback - callback that should be called when handling is done
+     *                  ( function( req, res, handler) )
+     */
+    //------------------------------------------------------------------------------------------------------
+    handleRequest: function( callback)
+    //------------------------------------------------------------------------------------------------------
+    {
+        if ( typeof callback === 'function' ) {
+            callback(this.request, this.response, this);
+        } else {
+            console.log('WARNING: unhandled response');
+        }
+    }
+});
+
+
+</pre>
+        </article>
+    </section>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        
+        
+        <p class="copyright">Erm ... Copyright could be placed here.</p>
+        
+        <p class="jsdoc-message">
+            Documentation generated by
+            <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0</a>
+            on 2015-05-19 11:01:22.849
+            using the <a href="https://github.com/spatools/ts2jsdoc">ts2jsdoc template</a>.
+        </p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.min.js"></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    
+    <script src="https://cdn.rawgit.com/jgallen23/toc/master/dist/toc.min.js"></script>
+    <script src="scripts/applytoc.js"></script>
+    
+
+    <script>
+        var searchMembers = [{"name":"Animal","longname":"Animal","link":"<a href=\"Animal.html\">Animal</a>"},{"name":"BaseApiRequestHandler","longname":"BaseApiRequestHandler","link":"<a href=\"BaseApiRequestHandler.html\">BaseApiRequestHandler</a>"},{"name":"BaseRequestHandler","longname":"BaseRequestHandler","link":"<a href=\"BaseRequestHandler.html\">BaseRequestHandler</a>"}];
+    </script>
+    <script src="scripts/main.js"></script>
+
+    
+</body>
+</html>
