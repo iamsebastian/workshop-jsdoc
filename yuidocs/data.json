@@ -1,0 +1,616 @@
+{
+    "project": {
+        "name": "The Foo API",
+        "description": "The Foo API: a library for doing X, Y, and Z",
+        "version": "0.1.1",
+        "url": "http://sebastianblei.com/"
+    },
+    "files": {
+        "src/Animal.js": {
+            "name": "src/Animal.js",
+            "modules": {},
+            "classes": {
+                "Animal": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/baseApiRequestHandler.js": {
+            "name": "src/baseApiRequestHandler.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/baseRequestHandler.js": {
+            "name": "src/baseRequestHandler.js",
+            "modules": {},
+            "classes": {
+                "": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "Animal": {
+            "name": "Animal",
+            "shortname": "Animal",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "src/Animal.js",
+            "line": 2,
+            "description": "Animal class - straight out of the zoo.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "Name the animal.",
+                    "type": "String",
+                    "optional": true,
+                    "optdefault": "'Vuvu'"
+                }
+            ]
+        },
+        "": {
+            "file": "src/baseRequestHandler.js",
+            "line": 4,
+            "extends": "BaseRequestHandler"
+        }
+    },
+    "classitems": [
+        {
+            "file": "src/Animal.js",
+            "line": 12,
+            "description": "How many legs the animal does have?",
+            "itemtype": "property",
+            "name": "legs",
+            "type": "Integer",
+            "default": "4",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 20,
+            "itemtype": "property",
+            "name": "eyes",
+            "type": "Integer",
+            "default": "2",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 26,
+            "itemtype": "property",
+            "name": "noses",
+            "type": "Integer",
+            "default": "1",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 32,
+            "itemtype": "property",
+            "name": "ears",
+            "type": "Integer",
+            "default": "2",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 38,
+            "itemtype": "property",
+            "name": "mouths",
+            "type": "Integer",
+            "default": "1",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 46,
+            "description": "Animal growls.",
+            "itemtype": "method",
+            "name": "growl",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 54,
+            "description": "Animal howls.",
+            "itemtype": "method",
+            "name": "howl",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 62,
+            "description": "Animal stops.",
+            "itemtype": "method",
+            "name": "stops",
+            "class": "Animal"
+        },
+        {
+            "file": "src/Animal.js",
+            "line": 70,
+            "description": "Animal cries.",
+            "itemtype": "method",
+            "name": "cries",
+            "class": "Animal"
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 18,
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 24,
+            "description": "defines weather app and backend are allowed to use this route,\nif accessed but not allowed for platform an error response will be sent",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 31,
+            "description": "true if Backend needs user authentication",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 36,
+            "description": "true if App needs session authentication",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 41,
+            "description": "true if App session needs to be linked to a user",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 46,
+            "description": "Instance of ApiRequestReferrerInformation containing the information about the referrer and\nmethods to access values",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 52,
+            "description": "Specifies if a since date is needed on request.body.since,\nhandler is responding with error if true and since is missing",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 58,
+            "description": "since value as Date instance",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 63,
+            "description": "Backend User Roles that are permitted for this action",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 68,
+            "description": "Default values to set relations to or use after authentication is handled",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 76,
+            "description": "takes errors in form of strings that can occur despite sending a valid response (status 200)",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 81,
+            "description": "Specifies if a customer or brand id is needed on request.body.filter,\nhandler is responding with error if true and customer / brand is missing",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 88,
+            "description": "The date for putting in a response",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 93,
+            "description": "sets the relationships that should be ignored when performing fetch requests",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 100,
+            "description": "extended constructor / initializer method (automatically called)",
+            "params": [
+                {
+                    "name": "req",
+                    "description": "- the request object as delivered from express framework"
+                },
+                {
+                    "name": "res",
+                    "description": "- the response object as delivered from express framework"
+                },
+                {
+                    "name": "callback ",
+                    "description": "- if this is a function ( function(err, res) )\n                                the performHandleRequest method will be called after setup using this\n                                callback",
+                    "optional": true,
+                    "optdefault": " undefined"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 190,
+            "description": "Send an error Response",
+            "params": [
+                {
+                    "name": "responseCode",
+                    "description": "- the code as delivered in the http status code"
+                },
+                {
+                    "name": "message",
+                    "description": "- the error message"
+                },
+                {
+                    "name": "errorDomain",
+                    "description": "- (optional) the error domain (default is the requested path)"
+                },
+                {
+                    "name": "errorCode",
+                    "description": "- (optional) internal code for resolving the error on referrer side"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 214,
+            "description": "Convenience function for sending database error responses",
+            "params": [
+                {
+                    "name": "err",
+                    "description": "- the error as given from the database framework"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 227,
+            "description": "called to send a normal response",
+            "params": [
+                {
+                    "name": "code",
+                    "description": ""
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 282,
+            "description": "To set the not parsed ( eg. ApiModel-Instances ) data to the response",
+            "params": [
+                {
+                    "name": "response",
+                    "description": "- Response class instance that will be returned"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 293,
+            "description": "To alter / customize the plain response data override this method",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "- the plan data as object that is to be altered"
+                }
+            ],
+            "return": {
+                "description": "- modified data",
+                "type": "Object | Array"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 306,
+            "description": "To alter / customize the plain response. override this method!",
+            "params": [
+                {
+                    "name": "response",
+                    "description": "- the plain response as object that is to be altered"
+                }
+            ],
+            "return": {
+                "description": "- modified data",
+                "type": "Object | Array"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 329,
+            "description": "Parses the request referrer information into on object that is stored on this.referrerInformation",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 390,
+            "description": "Check Backend permission to access this route or action",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 449,
+            "description": "Check Apps permission to access this route or action",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 516,
+            "description": "Resolving the requests filter parameter and fetching its values if needed,\nalso handling missing parameters in request",
+            "class": ""
+        },
+        {
+            "file": "src/baseApiRequestHandler.js",
+            "line": 617,
+            "description": "Overridden",
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 12,
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 15,
+            "description": "the request as delivered from express framework",
+            "type": "{http.clientRequest}",
+            "see": [
+                "{@link https://nodejs.org/api/http.html#http_class_http_clientrequest}"
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 22,
+            "description": "the response as delivered from express framework",
+            "type": "{http.serverResponse}",
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 28,
+            "description": "functions of type function(req, res, next, handler) that will be called as middle wares",
+            "type": "{Array}",
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 34,
+            "description": "If true no further handling will be done because the response is already sent",
+            "type": "{Bool}",
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 43,
+            "constructs": "",
+            "params": [
+                {
+                    "name": "req",
+                    "description": "Object Node's request object."
+                },
+                {
+                    "name": "res",
+                    "description": "Object Node's response object."
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 54,
+            "memberof": "Log from this prototype.",
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 79,
+            "description": "Add middle ware",
+            "params": [
+                {
+                    "name": "middleWare",
+                    "description": "- function to be called before handler function.\n                    ( function( req, res, next, handler))"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 94,
+            "description": "To be called from outside (user of class) when setup is finished",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "- callback that should be called when handling is done\n                 ( function( req, res, handler) )"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/baseRequestHandler.js",
+            "line": 167,
+            "description": "To be overridden by inheriting classes",
+            "params": [
+                {
+                    "name": "callback",
+                    "description": "- callback that should be called when handling is done\n                 ( function( req, res, handler) )"
+                }
+            ],
+            "class": ""
+        }
+    ],
+    "warnings": [
+        {
+            "message": "unknown tag: memberof",
+            "line": " src/baseRequestHandler.js:54"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/baseApiRequestHandler.js:18"
+        },
+        {
+            "message": "Missing item type\ndefines weather app and backend are allowed to use this route,\nif accessed but not allowed for platform an error response will be sent",
+            "line": " src/baseApiRequestHandler.js:24"
+        },
+        {
+            "message": "Missing item type\ntrue if Backend needs user authentication",
+            "line": " src/baseApiRequestHandler.js:31"
+        },
+        {
+            "message": "Missing item type\ntrue if App needs session authentication",
+            "line": " src/baseApiRequestHandler.js:36"
+        },
+        {
+            "message": "Missing item type\ntrue if App session needs to be linked to a user",
+            "line": " src/baseApiRequestHandler.js:41"
+        },
+        {
+            "message": "Missing item type\nInstance of ApiRequestReferrerInformation containing the information about the referrer and\nmethods to access values",
+            "line": " src/baseApiRequestHandler.js:46"
+        },
+        {
+            "message": "Missing item type\nSpecifies if a since date is needed on request.body.since,\nhandler is responding with error if true and since is missing",
+            "line": " src/baseApiRequestHandler.js:52"
+        },
+        {
+            "message": "Missing item type\nsince value as Date instance",
+            "line": " src/baseApiRequestHandler.js:58"
+        },
+        {
+            "message": "Missing item type\nBackend User Roles that are permitted for this action",
+            "line": " src/baseApiRequestHandler.js:63"
+        },
+        {
+            "message": "Missing item type\nDefault values to set relations to or use after authentication is handled",
+            "line": " src/baseApiRequestHandler.js:68"
+        },
+        {
+            "message": "Missing item type\ntakes errors in form of strings that can occur despite sending a valid response (status 200)",
+            "line": " src/baseApiRequestHandler.js:76"
+        },
+        {
+            "message": "Missing item type\nSpecifies if a customer or brand id is needed on request.body.filter,\nhandler is responding with error if true and customer / brand is missing",
+            "line": " src/baseApiRequestHandler.js:81"
+        },
+        {
+            "message": "Missing item type\nThe date for putting in a response",
+            "line": " src/baseApiRequestHandler.js:88"
+        },
+        {
+            "message": "Missing item type\nsets the relationships that should be ignored when performing fetch requests",
+            "line": " src/baseApiRequestHandler.js:93"
+        },
+        {
+            "message": "Missing item type\nextended constructor / initializer method (automatically called)",
+            "line": " src/baseApiRequestHandler.js:100"
+        },
+        {
+            "message": "Missing item type\nSend an error Response",
+            "line": " src/baseApiRequestHandler.js:190"
+        },
+        {
+            "message": "Missing item type\nConvenience function for sending database error responses",
+            "line": " src/baseApiRequestHandler.js:214"
+        },
+        {
+            "message": "Missing item type\ncalled to send a normal response",
+            "line": " src/baseApiRequestHandler.js:227"
+        },
+        {
+            "message": "Missing item type\nTo set the not parsed ( eg. ApiModel-Instances ) data to the response",
+            "line": " src/baseApiRequestHandler.js:282"
+        },
+        {
+            "message": "Missing item type\nTo alter / customize the plain response data override this method",
+            "line": " src/baseApiRequestHandler.js:293"
+        },
+        {
+            "message": "Missing item type\nTo alter / customize the plain response. override this method!",
+            "line": " src/baseApiRequestHandler.js:306"
+        },
+        {
+            "message": "Missing item type\nParses the request referrer information into on object that is stored on this.referrerInformation",
+            "line": " src/baseApiRequestHandler.js:329"
+        },
+        {
+            "message": "Missing item type\nCheck Backend permission to access this route or action",
+            "line": " src/baseApiRequestHandler.js:390"
+        },
+        {
+            "message": "Missing item type\nCheck Apps permission to access this route or action",
+            "line": " src/baseApiRequestHandler.js:449"
+        },
+        {
+            "message": "Missing item type\nResolving the requests filter parameter and fetching its values if needed,\nalso handling missing parameters in request",
+            "line": " src/baseApiRequestHandler.js:516"
+        },
+        {
+            "message": "Missing item type\nOverridden",
+            "line": " src/baseApiRequestHandler.js:617"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/baseRequestHandler.js:12"
+        },
+        {
+            "message": "Missing item type\nthe request as delivered from express framework",
+            "line": " src/baseRequestHandler.js:15"
+        },
+        {
+            "message": "Missing item type\nthe response as delivered from express framework",
+            "line": " src/baseRequestHandler.js:22"
+        },
+        {
+            "message": "Missing item type\nfunctions of type function(req, res, next, handler) that will be called as middle wares",
+            "line": " src/baseRequestHandler.js:28"
+        },
+        {
+            "message": "Missing item type\nIf true no further handling will be done because the response is already sent",
+            "line": " src/baseRequestHandler.js:34"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/baseRequestHandler.js:43"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/baseRequestHandler.js:54"
+        },
+        {
+            "message": "Missing item type\nAdd middle ware",
+            "line": " src/baseRequestHandler.js:79"
+        },
+        {
+            "message": "Missing item type\nTo be called from outside (user of class) when setup is finished",
+            "line": " src/baseRequestHandler.js:94"
+        },
+        {
+            "message": "Missing item type\nTo be overridden by inheriting classes",
+            "line": " src/baseRequestHandler.js:167"
+        }
+    ]
+}

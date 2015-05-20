@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/baseRequestHandler.js - The Foo API</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+	    <img alt="The Foo API" src="../assets/css/logo.png" style="max-height: 65%;" title="The Foo API">
+            The Foo API
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>0.1.1</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Animal", "classes/undefined"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+	    <div>
+	        <h3>APIs</h3>
+	        <div id="sidebar">
+	            <ul id="main-nav" class="nav nav-tabs" style="margin-bottom:0;">
+	                <li class="active"><a href="#classes" data-toggle="tab">Classes</a></li>
+	                <li><a href="#modules" data-toggle="tab">Modules</a></li>
+	            </ul>
+	    
+	            <div id="api-tabview-filter">
+	                <input type="search" placeholder="Type to filter APIs">
+	            </div>
+	    
+	            <div class="tab-content" style="border: 1px solid #DDD; border-top:0;">
+	                <div class="tab-pane active" id="classes">
+	                    <ul id="api-classes" class="nav nav-list">
+	                            <li><a href="../classes/Animal.html">Animal</a></li>
+	                            <li><a href="../classes/.html"></a></li>
+	                    </ul>
+	                </div>
+	    
+	                <div class="tab-pane" id="modules">
+	                    <ul id="api-modules" class="nav nav-list">
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        </div>
+        <div class="span9">
+                <form id="options-form" class="form-inline pull-right">
+                    Show:
+                    <label for="api-show-inherited" class="checkbox">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected" class="checkbox">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private" class="checkbox">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated" class="checkbox">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </form>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <div class="page-header">
+                            <h1>src/baseRequestHandler.js <small>File</small></h1>
+                        </div>
+                        
+                        <div class="file">
+                            <pre class="prettyprint linenums">
+                        var __class = require(&#x27;node-class&#x27;).class,
+                            chalk = require(&#x27;chalk&#x27;);
+                        
+                        /**
+                         * @class
+                         */
+                        var BaseRequestHandler = module.exports = __class(&#x27;BaseRequestHandler&#x27;,
+                        // TODO TOREAD: r.habermann
+                        // this @lends needs to placed directly one line before the object literal,
+                        // like you can see one line below. Otherwise, jsdoc can not inherhit the properties
+                        // of the class as members of the class.
+                        /** @lends BaseRequestHandler */
+                        {
+                        
+                            /**
+                             * the request as delivered from express framework
+                             * @type {http.clientRequest}
+                             * @see {@link https://nodejs.org/api/http.html#http_class_http_clientrequest}
+                             */
+                            request: null,
+                        
+                            /**
+                             * the response as delivered from express framework
+                             * @type {http.serverResponse}
+                             */
+                            response: null,
+                        
+                            /**
+                             * functions of type function(req, res, next, handler) that will be called as middle wares
+                             * @type {Array}
+                             */
+                            middleWares: [],
+                        
+                            /**
+                             * If true no further handling will be done because the response is already sent
+                             * @type {Bool}
+                             */
+                            responseIsSent: false,
+                            //------------------------------------------------------------------------------------------------------
+                        
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            /**
+                             * @constructs
+                             * @param req Object Node&#x27;s request object.
+                             * @param res Object Node&#x27;s response object.
+                             */
+                            initialize: function( req, res) {
+                                this.request = req;
+                                this.response = res;
+                            },
+                        
+                        
+                            /**
+                             * @memberof
+                             * Log from this prototype.
+                             */
+                            log: function log() {
+                        
+                                console.log.call(console, timeStamp(), chalk.blue(this.$class), chalk.green(Array.prototype.slice.call(arguments)));
+                        
+                            },
+                        
+                        
+                            logError: function logError() {
+                        
+                                console.error.call(console, timeStamp(), chalk.red(this.$class), chalk.yellow(Array.prototype.slice.call(arguments)));
+                        
+                            },
+                        
+                        
+                            logWarn: function logWarn() {
+                        
+                                console.warn.call(console, timeStamp(), chalk.yellow(this.$class), chalk.white(Array.prototype.slice.call(arguments)));
+                        
+                            },
+                        
+                        
+                            /**
+                             * Add middle ware
+                             *
+                             * @param middleWare - function to be called before handler function.
+                             *                     ( function( req, res, next, handler))
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            useMiddleWare: function( middleWare)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                if ( typeof middleWare !== &#x27;function&#x27; ) { return; }
+                                this.middleWares.push( middleWare);
+                            },
+                        
+                        
+                            /**
+                             * To be called from outside (user of class) when setup is finished
+                             *
+                             * @param callback - callback that should be called when handling is done
+                             *                  ( function( req, res, handler) )
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            performHandleRequest: function( callback)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var that = this, /*startProcess = -1, endProcess = 0, currentMiddleWareName = null,*/
+                        
+                                    middleWares = [].concat(this.middleWares), name,
+                        
+                                    next = function() {
+                        
+                                        /*if ( startProcess &gt; 0 &amp;&amp; typeof currentMiddleWareName === &#x27;string&#x27;) {
+                                            endProcess = (new Date()).getTime();
+                                            console.log(&#x27;Process duration (&#x27;+currentMiddleWareName+&#x27;):&#x27; + (endProcess - startProcess));
+                                            startProcess = -1;
+                                        }*/
+                        
+                                        if ( that.responseIsSent ) {
+                                            console.log(&quot;Response has already been sent in &quot;+that.$class);
+                                            return;
+                                        }
+                                        var middleWare;
+                        
+                                        if ( middleWares.length &lt; 1 ) {
+                                            if ( typeof callback === &#x27;function&#x27; ) {
+                                                that.handleRequest(callback);
+                                            }
+                                            return;
+                                        }
+                        
+                                        middleWare = middleWares.splice(0,1)[0];
+                        
+                                        if ( typeof middleWare !== &#x27;function&#x27; ) {
+                                            next();
+                                            return;
+                                        }
+                        
+                                        /*currentMiddleWareName = middleWare.toString();
+                        
+                                        startProcess = (new Date()).getTime();*/
+                        
+                                        /*
+                                        Log middleware name -----------------------------------
+                                         */
+                        
+                                        name = &#x27;unknwon&#x27;;
+                        
+                                        for(name in that.__proto__) {
+                                            if ( that.__proto__.hasOwnProperty(name) ) {
+                                                if ( that.__proto__[name] === middleWare ) {
+                                                    break;
+                                                }
+                                            }
+                                        }
+                        
+                                        console.log(&#x27;middleware: &#x27;+name);
+                        
+                                        /*
+                                         End log middleware name ------------------------------
+                                         */
+                        
+                                        middleWare( that.request, that.response, next, that);
+                                    }
+                                ;
+                                next();
+                            },
+                        
+                        
+                            /**
+                             * To be overridden by inheriting classes
+                             *
+                             * @param callback - callback that should be called when handling is done
+                             *                  ( function( req, res, handler) )
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            handleRequest: function( callback)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                if ( typeof callback === &#x27;function&#x27; ) {
+                                    callback(this.request, this.response, this);
+                                } else {
+                                    console.log(&#x27;WARNING: unhandled response&#x27;);
+                                }
+                            }
+                        });
+                        
+                        
+                        
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>

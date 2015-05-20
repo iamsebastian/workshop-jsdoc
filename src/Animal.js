@@ -2,41 +2,50 @@
 /**
  * Animal class - straight out of the zoo.
  * @class Animal
- * @this Animal
- * @property {Integer} Animal.legs Count of legs.
- * @property {Function} Animal.howl Howling - see {@link Animal~howl}
+ * @constructor
+ * @param {String} [name='Vuvu'] Name the animal.
  */
-export class Animal /** lends Animal.prototype */ {
-    /**
-     * @constructor
-     */
-    constructor() /** lends Animal */ {
-        this.legs = 4;
+export class Animal {
+    constructor(name='Vuvu') {
+        this.name = name;
+
         /**
-         * @member {Integer} Animal#eyes Count of eyes.
+         * How many legs the animal does have?
+         * @property legs
+         * @type Integer
+         * @default 4
+         */
+        this.legs = 4;
+
+        /**
+         * @property {Integer} eyes
+         * @default 2
          */
         this.eyes = 2;
 
         /**
-         * @member {Integer}
+         * @property {Integer} noses
+         * @default 1
          */
         this.noses = 1;
 
         /**
-         * @property {Integer} Animal.ears Animals ears.
+         * @property {Integer} ears
+         * @default 2
          */
         this.ears = 2;
 
         /**
-         * @name Animal.mouths
-         * @type {Integer}
+         * @property mouths
+         * @type Integer
+         * @default 1
          */
         this.mouths = 1;
     }
 
     /**
      * Animal growls.
-     * @method Animal~growl
+     * @method growl
      */
     growl() {
         console.log(`I have #{this.legs} legs.`);
@@ -44,8 +53,7 @@ export class Animal /** lends Animal.prototype */ {
 
     /**
      * Animal howls.
-     * @memberof Animal
-     * @method ~howl
+     * @method howl
      */
     howl() {
         console.log('Wooohooooo.');
@@ -53,6 +61,7 @@ export class Animal /** lends Animal.prototype */ {
 
     /**
      * Animal stops.
+     * @method stops
      */
     stops() {
         console.log('Animal stopped.');
@@ -60,7 +69,6 @@ export class Animal /** lends Animal.prototype */ {
 
     /**
      * Animal cries.
-     * @memberof Animal
      * @method cries
      */
     cries() {

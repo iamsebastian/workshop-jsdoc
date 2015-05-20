@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>src/baseApiRequestHandler.js - The Foo API</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="stylesheet" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="../assets/vendor/bootstrap/css/bootstrap.css">
+    <link rel="shortcut icon" type="image/png" href="../assets/favicon.png">
+</head>
+<body class="yui3-skin-sam">
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <h1 class="brand" style="padding: 10px 16px 10px; height: 20px; line-height: 20px; margin-left: 0;">
+	    <img alt="The Foo API" src="../assets/css/logo.png" style="max-height: 65%;" title="The Foo API">
+            The Foo API
+        </h1>
+	<div class="nav">
+            <li class="divider-vertical"></li>
+            <li>
+                <p class="navbar-text">
+                    API Docs for Version: <b>0.1.1</b>
+                </p>
+            </li>
+        </div>
+        <form class="navbar-form pull-right" style="line-height: 40px; height: 40px;">
+            <input style="margin-top: 0;" type="text" class="search-query" placeholder="Search for classes/modules..." data-obj='["classes/Animal", "classes/undefined"]'>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="span3">
+	    <div>
+	        <h3>APIs</h3>
+	        <div id="sidebar">
+	            <ul id="main-nav" class="nav nav-tabs" style="margin-bottom:0;">
+	                <li class="active"><a href="#classes" data-toggle="tab">Classes</a></li>
+	                <li><a href="#modules" data-toggle="tab">Modules</a></li>
+	            </ul>
+	    
+	            <div id="api-tabview-filter">
+	                <input type="search" placeholder="Type to filter APIs">
+	            </div>
+	    
+	            <div class="tab-content" style="border: 1px solid #DDD; border-top:0;">
+	                <div class="tab-pane active" id="classes">
+	                    <ul id="api-classes" class="nav nav-list">
+	                            <li><a href="../classes/Animal.html">Animal</a></li>
+	                            <li><a href="../classes/.html"></a></li>
+	                    </ul>
+	                </div>
+	    
+	                <div class="tab-pane" id="modules">
+	                    <ul id="api-modules" class="nav nav-list">
+	                    </ul>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+        </div>
+        <div class="span9">
+                <form id="options-form" class="form-inline pull-right">
+                    Show:
+                    <label for="api-show-inherited" class="checkbox">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected" class="checkbox">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private" class="checkbox">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated" class="checkbox">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </form>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+                        <div class="page-header">
+                            <h1>src/baseApiRequestHandler.js <small>File</small></h1>
+                        </div>
+                        
+                        <div class="file">
+                            <pre class="prettyprint linenums">
+                        //----------------------------------------------------------------------------------------------------------
+                        var __class = require(&#x27;node-class&#x27;).class,
+                            ApiRequestReferrerInformation = rqr(&#x27;modules/requestHandler/referrerInformation&#x27;),
+                            BaseRequestHandler = rqr(&#x27;modules/requestHandler/baseRequestHandler&#x27;),
+                            chalk = require(&#x27;chalk&#x27;),
+                            core = require(&#x27;cr-api-core&#x27;),
+                            Response = rqr(&#x27;app/models/response&#x27;),
+                            AccessMiddleWare = rqr(&#x27;config/middlewares/accessMiddleWare&#x27;);
+                        
+                        //----------------------------------------------------------------------------------------------------------
+                        
+                        
+                        /**
+                         * @class
+                         * @extends BaseRequestHandler
+                         */
+                        var BaseApiRequestHandler = module.exports =  __class( &quot;BaseApiRequestHandler&quot;,
+                        /** @lends BaseApiRequestHandler */
+                        {
+                            //------------------------------------------------------------------------------------------------------
+                            extends:[&#x27;BaseRequestHandler&#x27;],
+                            //------------------------------------------------------------------------------------------------------
+                        
+                            /**
+                             * defines weather app and backend are allowed to use this route,
+                             * if accessed but not allowed for platform an error response will be sent
+                             */
+                            backendHasAccess:true,
+                            appHasAccess:true,
+                        
+                            /**
+                             * true if Backend needs user authentication
+                             */
+                            restrictBackendAccess: true, // TODO: change back to true
+                        
+                            /**
+                             * true if App needs session authentication
+                             */
+                            restrictAppAccess: true,
+                        
+                            /**
+                             * true if App session needs to be linked to a user
+                             */
+                            appUserRequired: false,
+                        
+                            /**
+                             * Instance of ApiRequestReferrerInformation containing the information about the referrer and
+                             * methods to access values
+                             */
+                            referrerInformation: null,
+                        
+                            /**
+                             * Specifies if a since date is needed on request.body.since,
+                             * handler is responding with error if true and since is missing
+                             */
+                            sinceValueIsMandatory: false,
+                        
+                            /**
+                             * since value as Date instance
+                             */
+                            since: new Date(0),
+                        
+                            /**
+                             * Backend User Roles that are permitted for this action
+                             */
+                            permittedRoles: [&#x27;super-admin&#x27;, &#x27;admin&#x27;, &#x27;editor&#x27;],
+                        
+                            /**
+                             * Default values to set relations to or use after authentication is handled
+                             */
+                            backendUser: null,
+                            appSession: null,
+                            brands: [],
+                            customers: [],
+                        
+                            /**
+                             * takes errors in form of strings that can occur despite sending a valid response (status 200)
+                             */
+                            errors: [],
+                        
+                            /**
+                             * Specifies if a customer or brand id is needed on request.body.filter,
+                             * handler is responding with error if true and customer / brand is missing
+                             */
+                            backendNeedsToSpecifyBrand: true,
+                            backendNeedsToSpecifyCustomer: false,
+                        
+                            /**
+                             * The date for putting in a response
+                             */
+                            responseTime: null,
+                        
+                            /**
+                             * sets the relationships that should be ignored when performing fetch requests
+                             */
+                            ignoreRelationShipsInFetches:[],
+                            //------------------------------------------------------------------------------------------------------
+                        
+                        
+                            /**
+                             * extended constructor / initializer method (automatically called)
+                             * @param req - the request object as delivered from express framework
+                             * @param res - the response object as delivered from express framework
+                             * @param [callback = undefined] - if this is a function ( function(err, res) )
+                             *                                 the performHandleRequest method will be called after setup using this
+                             *                                 callback
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            initialize: function( req, res, callback)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var opt = req.method === &#x27;OPTIONS&#x27;,
+                                    url = req.url || &#x27;&#x27;,
+                                    //user = req.user,
+                                    since = parseInt(req.param(&#x27;since&#x27;), 10) || 0,
+                                    noBackendTokenNeeded = !!url.match(
+                                        /^\/users\/(login|register|forgetpassword|password-recovery)/);
+                        
+                        
+                                this.responseTime = new Date().getTime();
+                        
+                                this.__parent( req, res);
+                        
+                                if ( opt || noBackendTokenNeeded ) {
+                                    this.restrictBackendAccess = false;
+                                }
+                        
+                                if ( this.sinceValueIsMandatory &amp;&amp; ( typeof req.body.since !== &#x27;number&#x27; ) ) {
+                                    this.sendError(400, &#x27;To give a since value is mandatory for this request&#x27; );
+                                    return;
+                                }
+                        
+                                //if ( since !== null &amp;&amp; core.stringUtil.stringIsEmpty(since) === false ) {
+                                    this.since = new Date(since);
+                                //}
+                        
+                                this.setup();
+                        
+                                if ( typeof callback === &#x27;function&#x27; ) {
+                                    this.performHandleRequest(callback);
+                                }
+                            },
+                        
+                            /// SETTING UP
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            setup: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var isMobileApp;
+                                this.parseReferrerInformation();
+                                isMobileApp = this.referrerInformation.isMobileApp() ||
+                                    !core.stringUtil.stringIsEmpty(this.request.body.api_key) ||
+                                    !core.stringUtil.stringIsEmpty(this.request.body.apiKey);
+                        
+                                if ( isMobileApp &amp;&amp; !this.appHasAccess ) {
+                                    this.sendError(401, &#x27;This route can not be accessed by mobile app.&#x27;);
+                                    return;
+                                } else if ( !isMobileApp &amp;&amp; !this.backendHasAccess ) {
+                                    this.sendError(401, &#x27;This route can not be accessed by editor tool.&#x27;);
+                                    return;
+                                }
+                        
+                                this.setupMiddleWares();
+                            },
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            setupMiddleWares: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var isMobileApp;
+                        
+                                isMobileApp = this.referrerInformation.isMobileApp() ||
+                                    !core.stringUtil.stringIsEmpty(this.request.body.api_key) ||
+                                    !core.stringUtil.stringIsEmpty(this.request.body.apiKey);
+                        
+                                if ( isMobileApp ) {
+                                    this.setupAppSessionPermissionCheck();
+                                    if ( this.appUserRequired ) {
+                                        this.setupAppUserPermissionCheck();
+                                    }
+                                } else {
+                                    this.setupBackendUserPermissionCheck();
+                                }
+                            },
+                        
+                        
+                            // ## RESPONSES
+                        
+                            /**
+                             * Send an error Response
+                             * @param responseCode - the code as delivered in the http status code
+                             * @param message - the error message
+                             * @param errorDomain - (optional) the error domain (default is the requested path)
+                             * @param errorCode - (optional) internal code for resolving the error on referrer side
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            sendError: function( responseCode, message, errorDomain, errorCode )
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                console.error(responseCode, message, errorDomain, errorCode);
+                                
+                                if ( this.responseIsSent === true ) { return; }
+                                var errorResponse = new Response(responseCode),
+                                    code = errorCode || responseCode,
+                                    domain = errorDomain || this.request.url;
+                        
+                                errorResponse.error = { domain: domain, code: code, message: message };
+                        
+                                this.responseIsSent = true;
+                                this.writeToResponse( responseCode, JSON.parse(errorResponse.getResponseString()));
+                            },
+                        
+                            /**
+                             * Convenience function for sending database error responses
+                             * @param err - the error as given from the database framework
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            sendDatabaseError: function( err)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                console.trace(err);
+                                this.sendError(500, &quot;Error in database handling.&quot;);
+                            },
+                        
+                        
+                            /**
+                             * called to send a normal response
+                             * @param code
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            sendResponse: function( code)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                if ( this.responseIsSent === true ) { return; }
+                                var response = new Response( code), plainResponse, i, errorString;
+                        
+                                this.setResponseDataToResponse( response);
+                        
+                                plainResponse = this.makePlainResponseObject( response);
+                        
+                                if ( plainResponse === null || plainResponse === undefined ) {
+                                    this.sendError(&quot;Fatal error in creating Response&quot;);
+                                    return;
+                                }
+                        
+                                if ( plainResponse.response !== null ) {
+                                    plainResponse.response = this.customizeResponseData( plainResponse.response);
+                                }
+                        
+                                if ( typeof this.responseTime === &#x27;number&#x27;) {
+                                    plainResponse.date = this.responseTime;
+                                } else if ( this.responseTime instanceof Date ) {
+                                    plainResponse.date = this.responseTime.getTime();
+                                }
+                        
+                                if ( this.errors.length &gt; 0 ) {
+                                    plainResponse.error = &#x27;&#x27;;
+                        
+                                    for( i = 0; i &lt; this.errors.length; i++) {
+                                        plainResponse.error += this.errors[i] + &#x27;\n&#x27;;
+                                    }
+                        
+                                    plainResponse.error = plainResponse.error.trim();
+                                }
+                        
+                                plainResponse = this.customizeResponse(plainResponse);
+                        
+                                this.responseIsSent = true;
+                                this.writeToResponse( code, plainResponse);
+                            },
+                        
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            writeToResponse: function( code, data)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                this.response.status( code).json( data);
+                            },
+                        
+                        
+                            /**
+                             * To set the not parsed ( eg. ApiModel-Instances ) data to the response
+                             * @param response - Response class instance that will be returned
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            setResponseDataToResponse: function( response)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                            },
+                        
+                        
+                            /**
+                             * To alter / customize the plain response data override this method
+                             * @param data - the plan data as object that is to be altered
+                             * @return {Object | Array} - modified data
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            customizeResponseData: function( data)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                return data;
+                            },
+                        
+                        
+                            /**
+                             * To alter / customize the plain response. override this method!
+                             * @param response - the plain response as object that is to be altered
+                             * @return {Object | Array} - modified data
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            customizeResponse: function( response)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                return response;
+                            },
+                        
+                        
+                            // ## PARSING
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            makePlainResponseObject: function( response)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                return JSON.parse( response.getResponseString());
+                            },
+                        
+                        
+                            /**
+                             * Parses the request referrer information into on object that is stored on this.referrerInformation
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            parseReferrerInformation: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                this.referrerInformation = new ApiRequestReferrerInformation(this.request);
+                            },
+                        
+                        
+                            // ## HELPER
+                            // TODO: remove this and use referrerInformation
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            isMobileApp: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var isMobileApp;
+                                isMobileApp = this.referrerInformation.isMobileApp() ||
+                                    !core.stringUtil.stringIsEmpty(this.request.body.api_key) ||
+                                    !core.stringUtil.stringIsEmpty(this.request.body.apiKey);
+                        
+                                return isMobileApp;
+                            },
+                        
+                        
+                            // ## SETTING UP
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            setupBackendUserPermissionCheck: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                if ( this.restrictBackendAccess ) {
+                                    this.useMiddleWare(this.backendPermissionMiddleWare);
+                                }
+                        
+                                this.useMiddleWare( this.filterCustomerAndBrandsMiddleWare);
+                            },
+                        
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            setupAppSessionPermissionCheck: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                if ( !this.restrictAppAccess ) { return; }
+                        
+                                this.useMiddleWare(this.appSessionPermissionMiddleWare);
+                            },
+                        
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            setupAppUserPermissionCheck: function()
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                this.useMiddleWare(this.appUserPermissionCheckMiddleWare);
+                            },
+                        
+                        
+                            //## MIDDLE WARES
+                        
+                            /**
+                             * Check Backend permission to access this route or action
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            backendPermissionMiddleWare: function(req, res, next, handler)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var that = handler,
+                                    userFetch = new core.ApiFetchRequest(&#x27;BackendUser&#x27;),
+                                    brandFetch = new core.ApiFetchRequest(&#x27;Brand&#x27;),
+                                    fetchQueue = new core.ApiFetchRequestQueue([userFetch, brandFetch]),
+                                    user = that.referrerInformation.getAuthenticationKey();
+                        
+                                if ( user === null || user.email === null ) {
+                                    return AccessMiddleWare.loginMiddleWare(req, res, next,{
+                                        referrerInformation: handler.referrerInformation,
+                                        restrictBackendAccess: handler.restrictBackendAccess,
+                                        backendHasAccess: handler.backendHasAccess
+                                    }, handler );
+                                }
+                        
+                                userFetch.where( &#x27;$self.email=&quot;&#x27;+user.email+&#x27;&quot;&#x27;);
+                        
+                                brandFetch.where( &#x27;$self.users.email=&quot;&#x27;+user.email+&#x27;&quot;&#x27;);
+                        
+                                brandFetch.setIgnoreRelations([&#x27;sessions&#x27;]);
+                        
+                                fetchQueue.performRequests( function( err, result) {
+                        
+                                    var backendUsers, brands;
+                        
+                                    if ( err ) {
+                                        that.sendError(500, &#x27;Error in database handling&#x27;);
+                                    }
+                        
+                                    backendUsers = result[userFetch.entityName];
+                                    brands = result[brandFetch.entityName];
+                        
+                                    if ( backendUsers.length &lt; 1 ) {
+                                        that.sendError(400, &#x27;No user found for this key.&#x27;);
+                                        return;
+                                    }
+                        
+                                    if ( brands.length &lt; 1 ) {
+                                        that.sendError(400, &#x27;No brand found for user.&#x27;);
+                                        return;
+                                    }
+                        
+                                    that.brands = brands;
+                                    that.backendUser = backendUsers[0];
+                        
+                                    AccessMiddleWare.loginMiddleWare(req, res, next, {
+                                        referrerInformation: handler.referrerInformation,
+                                        restrictBackendAccess: handler.restrictBackendAccess,
+                                        backendHasAccess: handler.backendHasAccess
+                                    });
+                                });
+                            },
+                        
+                            /**
+                             * Check Apps permission to access this route or action
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            appSessionPermissionMiddleWare: function(req, res, next, handler)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var that = handler,
+                                    sessionFetch = new core.ApiFetchRequest(&#x27;Session&#x27;),
+                                    brandFetch = new core.ApiFetchRequest(&#x27;Brand&#x27;),
+                                    fetchQueue = new core.ApiFetchRequestQueue([sessionFetch, brandFetch]),
+                                    apiKey = that.referrerInformation.getAuthenticationKey();
+                        
+                                if ( apiKey === null ) {
+                                    that.sendError(401, &#x27;No API key submitted.&#x27;);
+                                    return;
+                                }
+                        
+                                sessionFetch.where( &#x27;$self.apiKey=&quot;&#x27;+apiKey+&#x27;&quot;&#x27;);
+                        
+                                sessionFetch.setIgnoreRelations([&#x27;ugcObjects&#x27;, &#x27;likes&#x27;]);
+                        
+                                brandFetch.where( &#x27;$self.sessions.apiKey=&quot;&#x27;+apiKey+&#x27;&quot;&#x27;);
+                        
+                                brandFetch.setIgnoreRelations([&#x27;sessions&#x27;]);
+                        
+                                fetchQueue.performRequests( function( err, result) {
+                        
+                                    var sessions, brands;
+                        
+                                    if ( err ) {
+                                        that.sendError(500, &#x27;Error in database handling.&#x27;);
+                                    }
+                        
+                                    sessions = fetchQueue.resultForRequest( sessionFetch);
+                                    brands = fetchQueue.resultForRequest( brandFetch);
+                        
+                                    if ( sessions.length &lt; 1 ) {
+                                        that.sendError(401, &#x27;No user session found for this API key.&#x27;);
+                                        return;
+                                    }
+                        
+                                    if ( brands.length &lt; 1 ) {
+                                        that.sendError(401, &#x27;No brand found for API key.&#x27;);
+                                        return;
+                                    }
+                        
+                                    that.brands = brands;
+                                    that.appSession = sessions[0];
+                        
+                                    next();
+                                });
+                            },
+                        
+                        
+                            //------------------------------------------------------------------------------------------------------
+                            appUserPermissionCheckMiddleWare: function(req, res, next, handler)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                if (handler.appSession.getUser() === null) {
+                                    return handler.sendError(403, &#x27;You need to register to do this.&#x27;);
+                                }
+                        
+                                next();
+                            },
+                        
+                        
+                            /**
+                             * Resolving the requests filter parameter and fetching its values if needed,
+                             * also handling missing parameters in request
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            filterCustomerAndBrandsMiddleWare: function(req, res, next, handler)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                var filter = req.body.filter || null,
+                                    brandId, customerId, brand, customer,
+                                    brandFetch,
+                                    customerFetch,
+                                    fetchQueue = new core.ApiFetchRequestQueue();
+                        
+                                if ( ! handler.backendNeedsToSpecifyCustomer &amp;&amp; ! handler.backendNeedsToSpecifyBrand ) {
+                                    next();
+                                    return;
+                                }
+                        
+                                // If a brand is specified, customer id can be ignored, because it comes with the brand
+                                if ( handler.backendNeedsToSpecifyBrand ) { handler.backendNeedsToSpecifyCustomer = false; }
+                        
+                                if ( filter === null &amp;&amp;
+                                    ( handler.backendNeedsToSpecifyBrand || handler.backendNeedsToSpecifyCustomer ) )
+                                {
+                                    handler.sendError(400, &#x27;No filter set but needed for this request.&#x27;);
+                                    return;
+                                }
+                        
+                                brandId = filter.brand || null;
+                                customerId = filter.customer || null;
+                        
+                                if ( handler.backendNeedsToSpecifyBrand  ) {
+                                    if (brandId === null) {
+                                        handler.sendError(400, &#x27;No brand id specified on filter.brand.&#x27;);
+                                        return;
+                                    }
+                        
+                                    brand = core.ApiModel.findIdInArray( brandId, handler.brands);
+                                    if ( brand !== null ) {
+                                        handler.brands = [ brand ];
+                                    } else {
+                                        brandFetch = new core.ApiFetchRequest(&#x27;Brand&#x27;).fetchId(brandId);
+                                        brandFetch.setIgnoreRelations([&#x27;sessions&#x27;]);
+                                        fetchQueue.addRequest( brandFetch);
+                                    }
+                                }
+                        
+                                if ( handler.backendNeedsToSpecifyCustomer ) {
+                                    if (customerId === null) {
+                                        handler.sendError(400, &#x27;No customer id specified on filter.customer.&#x27;);
+                                        return;
+                                    }
+                        
+                                    customer = core.ApiModel.findIdInArray( customerId, handler.customers);
+                                    if ( customer !== null ) {
+                                        handler.customers = [ customer ];
+                                    } else {
+                                        customerFetch = new core.ApiFetchRequest(&#x27;Customer&#x27;).fetchId(customerId);
+                                        fetchQueue.addRequest( customerFetch);
+                                    }
+                                }
+                        
+                                if ( fetchQueue.requests.length &lt;= 0 ) {
+                                    next();
+                                    return;
+                                }
+                        
+                                fetchQueue.performRequests( function(err, result){
+                                    var brands, customers;
+                        
+                                    if ( err ) {
+                                        handler.sendDatabaseError(err);
+                                        return;
+                                    }
+                        
+                                    brands = fetchQueue.resultForRequest( brandFetch);
+                        
+                                    customers = fetchQueue.resultForRequest( customerFetch);
+                        
+                                    if ( handler.backendNeedsToSpecifyBrand ) {
+                                        if ( brands.length &lt;= 0 ) {
+                                            handler.sendError(400, &#x27;Brand not found for id &#x27;+brandId);
+                                            return;
+                                        }
+                                        handler.brands = brands;
+                                    }
+                        
+                                    if ( handler.backendNeedsToSpecifyCustomer ) {
+                                        if ( customers.length &lt;= 0 ) {
+                                            handler.sendError(400, &#x27;Customer not found for id &#x27;+customerId);
+                                            return;
+                                        }
+                                        handler.customers = customers;
+                                    }
+                        
+                                    next();
+                                });
+                            },
+                        
+                        
+                            /**
+                             * Overridden
+                             */
+                            //------------------------------------------------------------------------------------------------------
+                            handleRequest: function( callback)
+                            //------------------------------------------------------------------------------------------------------
+                            {
+                                this.sendResponse( 200);
+                                //this.__parent( callback);
+                            }
+                        });
+                        
+                        
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/jquery/jquery-1.8.2.min.js"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.js"></script>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script src="../assets/js/yuidoc-bootstrap.js"></script>
+<script>prettyPrint();</script>
+</body>
+</html>
